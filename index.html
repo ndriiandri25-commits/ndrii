@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tracker Project Vercel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Project Tracker</p>
+          <h1 id="project-name">Tracker Project WNGR</h1>
+        </div>
+        <div class="topbar-meta">
+          <span id="project-location">Jakarta</span>
+          <span id="project-pm">PM : Doyok Sadino</span>
+          <button id="theme-toggle" class="theme-toggle" type="button">Dark mode</button>
+        </div>
+      </header>
+
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-heading">
+          <h2>Dashboard</h2>
+          <span>Ringkasan proyek</span>
+        </div>
+        <section class="summary-grid" id="summary-grid"></section>
+      </aside>
+
+      <main class="dashboard">
+        <section class="panel curve-panel">
+          <div class="panel-header">
+            <h2>Grafik Pembayaran</h2>
+          </div>
+          <div class="chart-wrap payment-chart-wrap">
+            <svg id="payment-chart" viewBox="0 0 220 220" role="img" aria-label="Grafik pembayaran"></svg>
+            <div class="payment-values">
+              <div class="payment-value">
+                <span><i class="legend paid"></i>Terbayar</span>
+                <strong id="paid-total"></strong>
+              </div>
+              <div class="payment-value">
+                <span><i class="legend unpaid"></i>Belum Terbayar</span>
+                <strong id="unpaid-total"></strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Nilai SPK</h2>
+            <button class="btn secondary" type="button" id="add-spk">Tambah SPK</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Judul</th>
+                  <th>No SPK</th>
+                  <th>Vendor</th>
+                  <th>Nilai</th>
+                  <th>Tanggal</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="spk-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>2. BOQ</h2>
+            <button class="btn secondary" type="button" id="add-boq">Tambah BOQ</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Uraian</th>
+                  <th>Satuan</th>
+                  <th>Volume</th>
+                  <th>Harga</th>
+                  <th>Subtotal</th>
+                  <th>Realisasi</th>
+                  <th>%</th>
+                </tr>
+              </thead>
+              <tbody id="boq-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div>
+            <div class="panel-header">
+              <h2>3. Pembayaran</h2>
+              <div class="panel-actions">
+                <select id="payment-filter" class="soft-filter">
+                  <option value="Semua">Semua</option>
+                  <option value="Transfer">Transfer</option>
+                  <option value="Cek">Cek</option>
+                  <option value="Tunai">Tunai</option>
+                </select>
+                <button class="btn secondary" type="button" id="add-payment">Tambah Pembayaran</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Jumlah</th>
+                    <th>Metode</th>
+                    <th>Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody id="payment-table"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-header">
+              <h2>4. Tagihan & Sisa Tagihan</h2>
+              <div class="panel-actions">
+                <select id="bill-filter" class="soft-filter">
+                  <option value="Semua">Semua</option>
+                  <option value="Belum dibayar">Belum dibayar</option>
+                  <option value="Proses">Proses</option>
+                  <option value="Lunas">Lunas</option>
+                </select>
+                <button class="btn secondary" type="button" id="add-bill">Tambah Tagihan</button>
+              </div>
+            </div>
+            <div class="bill-list" id="bill-table"></div>
+            <div id="project-summary"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="template-spk-row">
+      <tr>
+        <td></td>
+        <td><input type="text" data-field="judul" /></td>
+        <td><input type="text" data-field="noSpk" /></td>
+        <td><input type="text" data-field="vendor" /></td>
+        <td><input type="number" data-field="nilai" min="0" step="1000" /></td>
+        <td><input type="date" data-field="tanggal" /></td>
+        <td>
+          <select data-field="status">
+            <option value="Aktif">Aktif</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Tertunda">Tertunda</option>
+          </select>
+        </td>
+      </tr>
+    </template>
+
+    <template id="template-boq-row">
+      <tr>
+        <td><input type="text" data-field="uraian" /></td>
+        <td><input type="text" data-field="satuan" /></td>
+        <td><input type="number" data-field="volume" min="0" step="0.01" /></td>
+        <td><input type="number" data-field="harga" min="0" step="1000" /></td>
+        <td></td>
+        <td><input type="number" data-field="realisasi" min="0" step="0.01" /></td>
+        <td></td>
+      </tr>
+    </template>
+
+    <template id="template-payment-row">
+      <tr>
+        <td><input type="date" data-field="tanggal" /></td>
+        <td><input type="number" data-field="jumlah" min="0" step="1000" /></td>
+        <td><input type="text" data-field="metode" /></td>
+        <td><input type="text" data-field="keterangan" /></td>
+      </tr>
+    </template>
+
+    <template id="template-bill-row">
+      <tr>
+        <td></td>
+        <td><input type="text" data-field="uraian" /></td>
+        <td><input type="number" data-field="nilai" min="0" step="1000" /></td>
+        <td><input type="number" data-field="terbayar" min="0" step="1000" /></td>
+        <td></td>
+        <td>
+          <select data-field="status">
+            <option value="Belum dibayar">Belum dibayar</option>
+            <option value="Proses">Proses</option>
+            <option value="Lunas">Lunas</option>
+          </select>
+        </td>
+      </tr>
+    </template>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
